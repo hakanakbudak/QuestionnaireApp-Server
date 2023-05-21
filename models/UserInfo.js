@@ -2,18 +2,22 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userInfoSchema=new Schema({
-    age:{
+    selectionOne:{
         type:String
     },
-    country:{
+    selectionTwo:{
         type:String
     },
-    city:{
+    selectionThree:{
         type:String
     },
-    message:{
+    question:{
         type:String
     },
+    category:{
+        type:String
+    },
+    
 })
 
 const UserInfo=mongoose.model('UserInfo',userInfoSchema)
