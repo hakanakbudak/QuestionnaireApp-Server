@@ -170,8 +170,7 @@ app.put('openpage/update/:id', async (req, res) => {
 })
 
 app.post('/comment', async (req, res, next) => {
-    //res.json({ message: 'bu bir create isteği' })
-    //res.json({ message: 'bu bir create post isteği' })
+
     try {
         const comment = req.body
         const createdComment = await UserComment.create(comment)
@@ -192,6 +191,7 @@ app.get('/comment', async (req, res) => {
         console.log(error)
     }
 })
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
