@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const UserInfo = require('./models/UserInfo');
+const UserComment = require('./models/UserComment')
 const nodemailer = require('nodemailer');
 const db = "mongodb+srv://hakanakbudak06:hakan1234@userregister.hgaugqv.mongodb.net/test?retryWrites=true&w=majority";
 
@@ -38,14 +39,14 @@ app.post('/register', (req, res, next) => {
         username: req.body.username,
         password: req.body.password,//bcrypt.hashSync(req.body.password, 10)
 
-        userBirthDate:req.body.userBirthDate,
-        userJob:req.body.userJob,
-        userCity:req.body.userCity,
-        userEducation:req.body.userEducation,
+        userBirthDate: req.body.userBirthDate,
+        userJob: req.body.userJob,
+        userCity: req.body.userCity,
+        userEducation: req.body.userEducation,
 
     })
     //req.body.email != "" && req.body.password != "" && req.body.username != ""
-    if (req.body.email != "" && req.body.password != "" && req.body.username != "" ) {
+    if (req.body.email != "" && req.body.password != "" && req.body.username != "") {
         newUser.save(), (err => {
             if (err) {
                 return res.status(400).json({
@@ -85,11 +86,9 @@ app.post('/login', async (req, res) => {
         } else {
             console.log("bilgiler geçersiz")
             res.send(false)
+            console.log("lütfen alanları doldurun")
         }
-    } else {
-        res.send("lütfen alanları doldurun")
-        console.log("lütfen alanları doldurun")
-    }
+    } 
 })
 
 app.get('/getData', (req, res) => {
@@ -100,7 +99,6 @@ app.get('/getData', (req, res) => {
         const verified = jwt.verify(token, secretKey);
         if (verified) {
 
-            
             res.send('Yeni günün anketleri')
         } else {
             res.send('Invalid Token!')
@@ -119,6 +117,7 @@ app.post('/create', async (req, res, next) => {
     try {
         const person = req.body
         const createdPerson = await UserInfo.create(person)
+
         res.status(201).json(createdPerson)
         next()
     } catch (error) {
@@ -154,12 +153,12 @@ app.put('openpage/update/:id', async (req, res) => {
     // res.json({ message: 'bu bir update isteği' })
     try {
         const { id } = req.params
-        const { selectionOne, selectionTwo, selectionThree, question,category } = req.body
+        const { selectionOne, selectionTwo, selectionThree, question, category } = req.body
 
         if (!mongoose.Types.ObjectId.isValid(id))
             return res.status(404).send('post bulunamadi')
 
-        const updatedPerson = { selectionOne, selectionTwo, selectionThree, question,category, _id: id }
+        const updatedPerson = { selectionOne, selectionTwo, selectionThree, question, category, _id: id }
 
         await UserInfo.findByIdAndUpdate(id, updatedPerson, { new: true })
 
@@ -170,6 +169,29 @@ app.put('openpage/update/:id', async (req, res) => {
 
 })
 
+app.post('/comment', async (req, res, next) => {
+    //res.json({ message: 'bu bir create isteği' })
+    //res.json({ message: 'bu bir create post isteği' })
+    try {
+        const comment = req.body
+        const createdComment = await UserComment.create(comment)
+
+        res.status(201).json(createdComment)
+        next()
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.get('/comment', async (req, res) => {
+
+    try {
+        const comment = await UserComment.find()
+        res.json(comment)
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
