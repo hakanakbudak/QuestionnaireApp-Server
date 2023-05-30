@@ -3,13 +3,12 @@ var cors = require('cors');
 const app = express()
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const port = 3000
+const port = 3000;
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const UserInfo = require('./models/UserInfo');
 const UserComment = require('./models/UserComment')
-const nodemailer = require('nodemailer');
 const db = "mongodb+srv://hakanakbudak06:hakan1234@userregister.hgaugqv.mongodb.net/test?retryWrites=true&w=majority";
 
 app.use(express.json())
@@ -29,9 +28,8 @@ mongoose.connect(db, {
     .then(() => console.log('MongoDB connection successful.'))
     .catch((error) => console.error("MongoDB connection failed:", error.message))
 
-//
-console.log(process.versions.openssl);
 
+    
 app.post('/register', (req, res, next) => {
     //res.json({ message: 'bu bir register isteği' })
     const newUser = new User({
@@ -88,7 +86,7 @@ app.post('/login', async (req, res) => {
             res.send(false)
             console.log("lütfen alanları doldurun")
         }
-    } 
+    }
 })
 
 app.get('/getData', (req, res) => {
@@ -109,9 +107,7 @@ app.get('/getData', (req, res) => {
 
 })
 
-
-
-app.post('/create', async (req, res, next) => {
+app.post('/questionnaire', async (req, res, next) => {
     //res.json({ message: 'bu bir create isteği' })
     //res.json({ message: 'bu bir create post isteği' })
     try {
@@ -125,7 +121,7 @@ app.post('/create', async (req, res, next) => {
     }
 })
 
-app.get('/persons', async (req, res) => {
+app.get('/questionnaire', async (req, res) => {
     //res.json({message:'bu bir  person get isteği'})
     try {
         const persons = await UserInfo.find()
@@ -135,22 +131,26 @@ app.get('/persons', async (req, res) => {
     }
 })
 
-app.delete('/persons/:id', async (req, res) => {
-    //res.json({ message: 'bu bir delete isteği' })
-
+app.get('/questionnaire/:id', async (req, res) => {
     try {
-        const { id } = req.params
-        await UserInfo.findByIdAndRemove(id)
-        res.json({ message: 'Person b silindi' })
+        const { id } = req.params;
 
+        // UserInfo modelinden findById metoduyla veriyi bulun
+        const person = await UserInfo.findById(id);
+
+        if (!person) {
+            return res.status(404).json({ error: 'Kişi bulunamadı' });
+        }
+
+        res.json(person);
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json({ error: 'Bir hata oluştu' });
     }
+});
 
-})
+app.put('/questionnaire/:id', async (req, res) => {
 
-app.put('openpage/update/:id', async (req, res) => {
-    // res.json({ message: 'bu bir update isteği' })
     try {
         const { id } = req.params
         const { selectionOne, selectionTwo, selectionThree, question, category } = req.body
@@ -163,6 +163,20 @@ app.put('openpage/update/:id', async (req, res) => {
         await UserInfo.findByIdAndUpdate(id, updatedPerson, { new: true })
 
         res.json(updatedPerson)
+    } catch (error) {
+        console.log(error)
+    }
+
+})
+
+app.delete('/questionnaire/:id', async (req, res) => {
+    //res.json({ message: 'bu bir delete isteği' })
+
+    try {
+        const { id } = req.params
+        await UserInfo.findByIdAndRemove(id)
+        res.json({ message: 'Person b silindi' })
+
     } catch (error) {
         console.log(error)
     }
@@ -192,6 +206,21 @@ app.get('/comment', async (req, res) => {
     }
 })
 
+app.get('/setting/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const person = await User.findById(id);
+
+        if (!person) {
+            return res.status(404).json({ error: 'Kişi bulunamadı' });
+        }
+
+        res.json(person);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Bir hata oluştu' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
