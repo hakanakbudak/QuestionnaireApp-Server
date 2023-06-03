@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userInfoSchema=new Schema({
+const questionnairesSchema=new Schema({
     selectionOne:{
         type:String
     },
@@ -20,5 +20,5 @@ const userInfoSchema=new Schema({
     
 })
 
-const UserInfo=mongoose.model('UserInfo',userInfoSchema)
-module.exports=UserInfo;
+const Questionnaires=mongoose.model('questionnaires',questionnairesSchema)
+module.exports=Questionnaires;
