@@ -60,7 +60,15 @@ exports.putQuestionnaire = async (req, res) => {
 exports.deleteQuestionnaire = async (req, res) => {
     try {
         const { id } = req.params
-        await Questionnaires.findByIdAndRemove(id)
+        const { selectionOne, selectionTwo, selectionThree, question, category } = req.body
+
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).send('post bulunamadi')
+
+        const removeQuestionnaire = { selectionOne, selectionTwo, selectionThree, question, category, _id: id }
+
+        await Questionnaires.findByIdAndRemove(id,removeQuestionnaire)
+
         res.json({ message: 'Person b silindi' })
 
     } catch (error) {
