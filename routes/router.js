@@ -59,8 +59,6 @@ router.put('/register/:id', async (req, res) => {
 // add user
 router.post('/register', AuthController.authRegister);
 
-
-
 // login user
 router.post('/login', AuthController.authLogin);
 
@@ -95,4 +93,4 @@ router.get('/setting', SettingController.getSetting);
 router.put('/setting/:id', SettingController.putSetting);
 
 
-module.exports=router;
+module.exports = router;
