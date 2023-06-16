@@ -1,6 +1,9 @@
 const Questionnaires = require('../models/Questionnaires');
 const mongoose = require('mongoose');
+const User = require('../models/User');
+const { errorMonitor } = require('nodemailer/lib/xoauth2');
 
+/*
 exports.getAllQuestionaire = async (req, res) => {
     try {
         const questionnaires = await Questionnaires.find()
@@ -9,17 +12,24 @@ exports.getAllQuestionaire = async (req, res) => {
         console.log(error)
     }
 };
+*/
 
 exports.getQuestionnaire = async (req, res) => {
     try {
-        const { id,userId } = req.params;
+        const { id, userId } = req.params;
         
+    
+        const questionnaire = await Questionnaires.findOne({ userId: userId });
+        const user = await User.findById(id);
 
-        const questionnaire = await Questionnaires.getMaxListenersById(id,userId);
-        if (!questionnaire) {
+        console.log(id)
+        console.log(questionnaire)
+        
+        if (!questionnaire || questionnaire.userId !== user._id) {
             return res.status(404).json({ error: 'Kullanıcıya ait anket bulunamadı' });
         }
-        res.json(questionnaire);
+        
+        res.json({ questionnaire, user });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Bir hata oluştu' });

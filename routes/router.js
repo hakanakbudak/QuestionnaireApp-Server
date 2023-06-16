@@ -66,7 +66,7 @@ router.post('/login', AuthController.authLogin);
 router.post('/questionnaire', QuestionnaireController.addQuestionnaire);
 
 // get all questionnaire 
-router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
+//router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
 
 // get questionnaire
 router.get('/questionnaire/:id', QuestionnaireController.getQuestionnaire);
