@@ -62,23 +62,24 @@ router.post('/register', AuthController.authRegister);
 // login user
 router.post('/login', AuthController.authLogin);
 
-// add questionnaire
-router.post('/questionnaire', QuestionnaireController.addQuestionnaire);
-
-// get all questionnaire 
+// get all questionnaire
+//******************************************************************************************* */
 //router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
 
-// get questionnaire
-router.get('/questionnaire/:id', QuestionnaireController.getQuestionnaire);
+// add questionnaire
+router.post('/questionnaire/:userId', QuestionnaireController.addQuestionnaire);
 
-// questionnaire search
-router.get('/search', SearchController.getAllSearch);
+// get questionnaire
+router.get('/questionnaire/:userId', QuestionnaireController.getQuestionnaire);
 
 // update questionnaire
 router.put('/questionnaire/:id', QuestionnaireController.putQuestionnaire);
 
 // questionnaire delete
 router.delete('/questionnaire/:id', QuestionnaireController.deleteQuestionnaire);
+
+// questionnaire search
+router.get('/search', SearchController.getAllSearch);
 
 // add comment 
 router.post('/comment', CommentController.addComment);
@@ -91,6 +92,5 @@ router.get('/setting', SettingController.getSetting);
 
 //update setting
 router.put('/setting/:id', SettingController.putSetting);
-
 
 module.exports = router;

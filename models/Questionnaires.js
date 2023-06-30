@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 const User = require('./User');
 const Schema = mongoose.Schema;
@@ -19,7 +20,8 @@ const questionnairesSchema = new Schema({
         type: String
     },
     userId: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'User'
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
     },
 
 })
