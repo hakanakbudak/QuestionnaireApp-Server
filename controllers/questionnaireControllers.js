@@ -1,8 +1,9 @@
 const Questionnaires = require('../models/Questionnaires');
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const UserComment = require('../models/UserComment');
 
-/*
+
 exports.getAllQuestionaire = async (req, res) => {
     try {
         const questionnaires = await Questionnaires.find()
@@ -10,8 +11,32 @@ exports.getAllQuestionaire = async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+
 };
-*/
+
+
+exports.getQuestionnaireComment = async (req, res) => {
+    try {
+        const { id,questionnaireId  } = req.params;
+
+        const questionnaire = await Questionnaires.findById(id);
+        const comments = await UserComment.find({ questionnaireId: questionnaireId }).populate('questionnaireId');
+
+        console.log(questionnaire)
+        console.log(comments)
+
+        if (!comments && !questionnaire) {
+            return res.status(404).json({ error: 'Kullanıcı ve ait anket bulunamadı' });
+        }
+        res.json(comments)
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Bir hata oluştu' });
+    }
+};
+
+
 
 
 exports.getQuestionnaire = async (req, res) => {
@@ -19,25 +44,23 @@ exports.getQuestionnaire = async (req, res) => {
         const { id, userId } = req.params;
 
         const user = await User.findById(id);
-        if (!userId) {
-            return res.status(404).json({ error: 'Kullanıcıya ait anket bulunamadı' });
-        }
+        const questionnaire = await Questionnaires.find({ userId: userId }).populate('userId');
 
         console.log(userId)
         console.log(questionnaire)
 
-        if (!questionnaire) {
-            return res.status(404).json({ error: 'Kullanıcıya ait anket bulunamadı' });
+        if (!questionnaire && !user) {
+            return res.status(404).json({ error: 'Kullanıcı ve ait anket bulunamadı' });
         }
-
-        const questionnaire = await Questionnaires.find({ userId: userId }).populate('userId');
-        
         res.json(questionnaire)
+        
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Bir hata oluştu' });
+        return res.status(500).json({ error: 'Bir hata oluştu' });
     }
 };
+
+
 
 exports.addQuestionnaire = async (req, res, next) => {
 

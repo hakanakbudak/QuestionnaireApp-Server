@@ -6,6 +6,10 @@ const userCommentSchema = new Schema({
     comment: {
         type: String
     },
+    questionnaireId:{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'questionnaires'
+    }
     
 })
 

@@ -8,12 +8,10 @@ exports.authRegister = (req, res, next) => {
         email: req.body.email,
         username: req.body.username,
         password: req.body.password,//bcrypt.hashSync(req.body.password, 10)
-
         userBirthDate: req.body.userBirthDate,
         userJob: req.body.userJob,
         userCity: req.body.userCity,
         userEducation: req.body.userEducation,
-
     })
 
     if (req.body.email != "" && req.body.password != "" && req.body.username != "") {

@@ -18,14 +18,14 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 // *****
 router.get('/getData', (req, res) => {
-
     try {
         const token = req.headers.authorization;
         const secretKey = "MoHmggQ8ZyCb";
         const verified = jwt.verify(token, secretKey);
         if (verified) {
 
-            res.send('anket32')
+            // write get data function
+            res.send('Successfull!')
         } else {
             res.send('Invalid Token!')
         }
@@ -33,7 +33,7 @@ router.get('/getData', (req, res) => {
         return res.send('Invalid Token!');
     }
 
-})
+});
 
 // *****
 router.put('/register/:id', async (req, res) => {
@@ -62,15 +62,20 @@ router.post('/register', AuthController.authRegister);
 // login user
 router.post('/login', AuthController.authLogin);
 
+// get questionnaire comment ÇALIŞIYOR
+router.get('/questionnaire/:questionnaireId/comment/:id', QuestionnaireController.getQuestionnaireComment);
+
+// get questionnaire comment
+//router.get('/questionnaire/:questionnaireId/:questionnaireId', QuestionnaireController.getQuestionnaireComment);
+
 // get all questionnaire
-//******************************************************************************************* */
-//router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
+router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
 
 // add questionnaire
 router.post('/questionnaire/:userId', QuestionnaireController.addQuestionnaire);
 
 // get questionnaire
-router.get('/questionnaire/:userId', QuestionnaireController.getQuestionnaire);
+router.get('/questionnaire/:userId/:id', QuestionnaireController.getQuestionnaire);
 
 // update questionnaire
 router.put('/questionnaire/:id', QuestionnaireController.putQuestionnaire);
@@ -82,7 +87,10 @@ router.delete('/questionnaire/:id', QuestionnaireController.deleteQuestionnaire)
 router.get('/search', SearchController.getAllSearch);
 
 // add comment 
-router.post('/comment', CommentController.addComment);
+//router.post('/comment', CommentController.addComment);
+
+// ADD COMMENT
+router.post('/comment/:id', CommentController.createComment);
 
 // get comment
 router.get('/comment', CommentController.getComment);
