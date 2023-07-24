@@ -9,11 +9,21 @@ const SearchController = require('../controllers/searchControllers');
 const CommentController = require('../controllers/commentControllers');
 const SettingController = require('../controllers/settingControllers');
 
+
+
 router.use(express.json());
 router.options("*", cors());
 router.use(cors());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
+
+
+
+router.post("/submitVote",QuestionnaireController.getQuestionnaireUserSelection)
+
+router.get("/getSurveyResults",QuestionnaireController.getQuestionnaireVoteResult)
+
+
 
 
 // *****
@@ -62,20 +72,16 @@ router.post('/register', AuthController.authRegister);
 // login user
 router.post('/login', AuthController.authLogin);
 
-// get questionnaire comment ÇALIŞIYOR
-router.get('/questionnaire/:questionnaireId/comment/:id', QuestionnaireController.getQuestionnaireComment);
-
-// get questionnaire comment
-//router.get('/questionnaire/:questionnaireId/:questionnaireId', QuestionnaireController.getQuestionnaireComment);
-
 // get all questionnaire
 router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
 
-// add questionnaire
-router.post('/questionnaire/:userId', QuestionnaireController.addQuestionnaire);
-
 // get questionnaire
-router.get('/questionnaire/:userId/:id', QuestionnaireController.getQuestionnaire);
+//router.get('/questionnaire/:userId/:id', QuestionnaireController.getQuestionnaire);
+
+router.get('/questionnaire/:userId', QuestionnaireController.getQuestionnaire);
+
+// add questionnaire
+router.post('/questionnaire/create/:id', QuestionnaireController.addQuestionnaire);
 
 // update questionnaire
 router.put('/questionnaire/:id', QuestionnaireController.putQuestionnaire);
@@ -86,11 +92,11 @@ router.delete('/questionnaire/:id', QuestionnaireController.deleteQuestionnaire)
 // questionnaire search
 router.get('/search', SearchController.getAllSearch);
 
-// add comment 
-//router.post('/comment', CommentController.addComment);
+// add comment
+router.post('/questionnaire/comment/:id', CommentController.createComment);
 
-// ADD COMMENT
-router.post('/comment/:id', CommentController.createComment);
+// get questionnaire comment 
+router.get('/questionnaire/:questionnaireId/comment', QuestionnaireController.getQuestionnaireComment);
 
 // get comment
 router.get('/comment', CommentController.getComment);

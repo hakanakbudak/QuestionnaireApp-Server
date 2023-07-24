@@ -8,7 +8,8 @@ const userCommentSchema = new Schema({
     },
     questionnaireId:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'questionnaires'
+        ref: 'questionnaires',
+        required:true //sonradan ekledim silinebilir
     }
     
 })

@@ -19,11 +19,14 @@ const questionnairesSchema = new Schema({
     category: {
         type: String
     },
+    questionnaireDate: {
+        type: Date
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User'
+        ref: 'User',
+        required:true //sonradan ekledim silinebilir
     },
-    
     
 
 })

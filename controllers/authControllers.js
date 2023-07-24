@@ -2,49 +2,50 @@ const User = require('../models/User');
 const Questionnaires = require('../models/Questionnaires');
 const jwt = require('jsonwebtoken');
 
+
 exports.authRegister = (req, res, next) => {
 
-    const newUser = new User({
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,//bcrypt.hashSync(req.body.password, 10)
-        userBirthDate: req.body.userBirthDate,
-        userJob: req.body.userJob,
-        userCity: req.body.userCity,
-        userEducation: req.body.userEducation,
-    })
+  const newUser = new User({
+    email: req.body.email,
+    username: req.body.username,
+    password: req.body.password,//bcrypt.hashSync(req.body.password, 10)
+    userBirthDate: req.body.userBirthDate,
+    userJob: req.body.userJob,
+    userCity: req.body.userCity,
+    userEducation: req.body.userEducation,
+  })
 
-    if (req.body.email != "" && req.body.password != "" && req.body.username != "") {
-        newUser.save(), (err => {
-            if (err) {
-                return res.status(400).json({
-                    title: 'error',
-                    error: 'email in use'
-                })
-            }
-            return res.status(200).json({
-                title: 'signup success'
-            })
+  if (req.body.email != "" && req.body.password != "" && req.body.username != "") {
+    newUser.save(), (err => {
+      if (err) {
+        return res.status(400).json({
+          title: 'error',
+          error: 'email in use'
         })
-        console.log("kaydedildi")
-        res.send('Saved Successfully')
-    } else {
-        console.log("maalesef")
-    }
+      }
+      return res.status(200).json({
+        title: 'signup success'
+      })
+    })
+    console.log("kaydedildi")
+    res.send('Saved Successfully')
+  } else {
+    console.log("maalesef")
+  }
 };
 
 async function getUserQuestionnaires(userId) {
-    try {
-        
-      const questionnaires = await Questionnaires.find({ userId: userId }).exec();
-      console.log("içerikleri getirdimmmm");
-      return questionnaires;
-      
-    } catch (err) {
-      console.error("İçerikleri getirirken bir hata oluştu:", err);
-      throw err;
-    }
+  try {
+
+    const questionnaires = await Questionnaires.find({ userId: userId }).exec();
+    console.log("içerikleri getirdimmmm");
+    return questionnaires;
+
+  } catch (err) {
+    console.error("İçerikleri getirirken bir hata oluştu:", err);
+    throw err;
   }
+}
 /*
 exports.authLogin = async (req, res) => {
 
@@ -73,6 +74,7 @@ exports.authLogin = async (req, res) => {
 };
 */
 
+/*
 exports.authLogin = async (req, res) => {
     try {
       const users = await User.find({ email: req.body.email, password: req.body.password }).exec();
@@ -103,3 +105,25 @@ exports.authLogin = async (req, res) => {
       res.status(500).send("Sunucu hatası.");
     }
   };
+*/
+
+exports.authLogin = async (req, res) => {
+  const users = await User.find({ email: req.body.email, password: req.body.password}).exec();
+  if (users.length > 0) {
+    const user = users[0];
+
+    let data = {
+      time: Date(),
+      email: req.body.email,
+      password:req.body.password,
+      _id: user._id // Doğru _id değerini alıyoruz
+    }
+    const secretKey = "datateam";
+    const token = jwt.sign(data, secretKey);
+    //localStorage.setItem("authToken",secretKey);
+
+    res.send(token)
+  } else {
+    res.send(false)
+  }
+};

@@ -5,8 +5,8 @@ const UserComment = require('../models/UserComment');
 
 exports.createComment  = async (req, res) => {
     try {
-        const { id } = req.params; // Anket ID'si
-        const { comment } = req.body; // Yorum metni
+        const { id } = req.params;
+        const { comment } = req.body; 
 
         const questionnaire = await Questionnaires.findById(id);
         if (!questionnaire) {
@@ -14,6 +14,7 @@ exports.createComment  = async (req, res) => {
         }
         console.log(questionnaire)
 
+        
         const newComment = new UserComment({
             comment: comment,
             questionnaireId: id 
@@ -28,21 +29,6 @@ exports.createComment  = async (req, res) => {
         return res.status(500).json({ error: 'Bir hata oluştu' });
     }
 };
-
-/*
-exports.addComment=async (req, res, next) => {
-
-    try {
-        const comment = req.body
-        const createdComment = await UserComment.create(comment)
-
-        res.status(201).json(createdComment)
-        next()
-    } catch (error) {
-        console.log(error)
-    }
-};
-*/
 
 exports.getComment=async (req, res) => {
 
