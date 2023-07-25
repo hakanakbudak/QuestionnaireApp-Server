@@ -9,24 +9,13 @@ const SearchController = require('../controllers/searchControllers');
 const CommentController = require('../controllers/commentControllers');
 const SettingController = require('../controllers/settingControllers');
 
-
-
 router.use(express.json());
 router.options("*", cors());
 router.use(cors());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
-
-
-router.post("/submitVote",QuestionnaireController.getQuestionnaireUserSelection)
-
-router.get("/getSurveyResults",QuestionnaireController.getQuestionnaireVoteResult)
-
-
-
-
-// *****
+// getData
 router.get('/getData', (req, res) => {
     try {
         const token = req.headers.authorization;
@@ -45,7 +34,7 @@ router.get('/getData', (req, res) => {
 
 });
 
-// *****
+// update register
 router.put('/register/:id', async (req, res) => {
 
     try {
@@ -75,9 +64,6 @@ router.post('/login', AuthController.authLogin);
 // get all questionnaire
 router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
 
-// get questionnaire
-//router.get('/questionnaire/:userId/:id', QuestionnaireController.getQuestionnaire);
-
 router.get('/questionnaire/:userId', QuestionnaireController.getQuestionnaire);
 
 // add questionnaire
@@ -100,6 +86,10 @@ router.get('/questionnaire/:questionnaireId/comment', QuestionnaireController.ge
 
 // get comment
 router.get('/comment', CommentController.getComment);
+
+router.post("/submitVote",QuestionnaireController.getQuestionnaireUserSelection)
+
+router.get("/getSurveyResults",QuestionnaireController.getQuestionnaireVoteResult)
 
 //get setting
 router.get('/setting', SettingController.getSetting);

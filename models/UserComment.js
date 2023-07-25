@@ -9,11 +9,9 @@ const userCommentSchema = new Schema({
     questionnaireId:{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'questionnaires',
-        required:true //sonradan ekledim silinebilir
+        required:true 
     }
-    
 })
-
 
 const UserComment = mongoose.model('Comment', userCommentSchema);
 module.exports = UserComment;

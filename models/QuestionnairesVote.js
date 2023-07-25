@@ -12,12 +12,12 @@ const questionnaireVoteSchema = new mongoose.Schema({
   questionnaireId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'questionnaires',
-    //required: true,
+    required: true,
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    //required: true,
+    required: true,
   },
   selectionId: {
     type: Number,
