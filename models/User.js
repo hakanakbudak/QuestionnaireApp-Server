@@ -27,7 +27,8 @@ const userSchema = new Schema({
         type: String
     },
     imageUrl: {
-        type:String
+        filename: String,
+        path: String,
     }
 })
 

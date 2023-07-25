@@ -92,9 +92,11 @@ router.post("/submitVote",QuestionnaireController.getQuestionnaireUserSelection)
 router.get("/getSurveyResults",QuestionnaireController.getQuestionnaireVoteResult)
 
 //get setting
-router.get('/setting', SettingController.getSetting);
+router.get('/setting/:id', SettingController.getSetting);
 
 //update setting
 router.put('/setting/:id', SettingController.putSetting);
+
+
 
 module.exports = router;
