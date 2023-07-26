@@ -5,11 +5,9 @@ const UserComment = require('../models/UserComment');
 const QuestionnaireVote = require('../models/QuestionnairesVote');
 const jwt = require('jsonwebtoken');
 
-// Kullanıcının seçimini kaydetme endpoint'i
 exports.getQuestionnaireUserSelection = async (req, res) => {
     try {
         const { selectionId, userId, questionnaireId } = req.body;
-        // MongoDB'ye kullanıcının seçimini kaydet
         await QuestionnaireVote.create({ selectionId, userId, questionnaireId });
         res.status(200).json({ message: "Seçim başarıyla kaydedildi." });
     } catch (error) {
@@ -18,10 +16,8 @@ exports.getQuestionnaireUserSelection = async (req, res) => {
     }
 };
 
-// Anket sonuçlarını alma endpoint'i
 exports.getQuestionnaireVoteResult = async (req, res) => {
     try {
-        // MongoDB'den anket sonuçlarını al ve hesapla
         const totalVotes = await QuestionnaireVote.countDocuments();
         const selectionARatio = ((await QuestionnaireVote.countDocuments({ selectionId: 1 })) / totalVotes) * 100;
         const selectionBRatio = ((await QuestionnaireVote.countDocuments({ selectionId: 2 })) / totalVotes) * 100;

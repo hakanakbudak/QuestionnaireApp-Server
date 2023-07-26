@@ -2,7 +2,6 @@ const User = require('../models/User');
 const Questionnaires = require('../models/Questionnaires');
 const jwt = require('jsonwebtoken');
 
-
 exports.authRegister = (req, res, next) => {
 
   const newUser = new User({
