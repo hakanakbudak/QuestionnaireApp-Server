@@ -7,8 +7,9 @@ const jwt = require('jsonwebtoken');
 
 exports.getQuestionnaireUserSelection = async (req, res) => {
     try {
-        const { selectionId, userId, questionnaireId } = req.body;
-        await QuestionnaireVote.create({ selectionId, userId, questionnaireId });
+        const { selectionId, questionnaireId, userId } = req.body;
+        
+        await QuestionnaireVote.create({ selectionId, questionnaireId, userId });
         res.status(200).json({ message: "Seçim başarıyla kaydedildi." });
     } catch (error) {
         console.error(error);
@@ -57,11 +58,9 @@ exports.getAllQuestionaire = async (req, res) => {
 
 exports.getQuestionnaire = async (req, res) => {
     try {
-        const { id, userId } = req.params;
-        const user = await User.findById(id);
+        const { _id, userId } = req.params;
+        const user = await User.findById(_id);
         const questionnaire = await Questionnaires.find({ userId: userId }).populate('userId');
-        console.log(userId)
-        console.log(questionnaire)
         if (!questionnaire && !user) {
             return res.status(404).json({ error: 'Kullanıcı ve ait anket bulunamadı' });
         }

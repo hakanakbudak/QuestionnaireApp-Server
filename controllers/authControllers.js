@@ -1,65 +1,74 @@
 const User = require('../models/User');
-const Questionnaires = require('../models/Questionnaires');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 exports.authRegister = (req, res, next) => {
-
   const newUser = new User({
     email: req.body.email,
     username: req.body.username,
-    password: req.body.password,//bcrypt.hashSync(req.body.password, 10)
+    password: bcrypt.hashSync(req.body.password, 10),
     userBirthDate: req.body.userBirthDate,
     userJob: req.body.userJob,
     userCity: req.body.userCity,
     userEducation: req.body.userEducation,
+
   })
-
-  if (req.body.email != "" && req.body.password != "" && req.body.username != "") {
-    newUser.save(), (err => {
-      if (err) {
-        return res.status(400).json({
-          title: 'error',
-          error: 'email in use'
-        })
-      }
-      return res.status(200).json({
-        title: 'signup success'
-      })
+  newUser.save()
+    .then(savedUser => {
+      console.log('User saved...', savedUser);
+      res.send(savedUser)
     })
-    console.log("saved")
-    res.send('Saved Successfully')
-  } else {
-    console.log("maalesef")
-  }
-};
+    .catch(error => {
+      console.error('User is not saved !', error);
+    });
+},
 
-async function getUserQuestionnaires(userId) {
-  try {
-
-    const questionnaires = await Questionnaires.find({ userId: userId }).exec();
-    console.log("içerikleri getirdimmmm");
-    return questionnaires;
-
-  } catch (err) {
-    console.error("İçerikleri getirirken bir hata oluştu:", err);
-    throw err;
-  }
-}
-
-exports.authLogin = async (req, res) => {
-  const users = await User.find({ email: req.body.email, password: req.body.password}).exec();
-  if (users.length > 0) {
-    const user = users[0];
-    let data = {
-      time: Date(),
+  /*
+  exports.authRegister = (req, res, next) => {
+  
+    const newUser = new User({
       email: req.body.email,
-      password:req.body.password,
-      _id: user._id 
+      username: req.body.username,
+      password: bcrypt.hashSync(req.body.password, 10),
+      userBirthDate: req.body.userBirthDate,
+      userJob: req.body.userJob,
+      userCity: req.body.userCity,
+      userEducation: req.body.userEducation,
+    })
+      newUser.save()
+      .then(savedUser => {
+          console.log('User saved...', savedUser);
+          res.send(savedUser)
+      })
+      .catch(error => {
+          console.error('User is not saved !', error);
+      });
+  },
+  */
+
+  exports.authLogin = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const user = await User.findOne({ email }).exec();
+      if (!user) {
+
+        return res.send(false);
+      }
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.send(false);
+      }
+      const data = {
+        time: Date(),
+        email: email,
+        _id: user._id,
+      };
+
+      const secretKey = "datateam";
+      const token = jwt.sign(data, secretKey);
+      res.send(token);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Sunucu hatası: Giriş yapılamadı' });
     }
-    const secretKey = "datateam";
-    const token = jwt.sign(data, secretKey);
-    res.send(token)
-  } else {
-    res.send(false)
-  }
-};
+  };

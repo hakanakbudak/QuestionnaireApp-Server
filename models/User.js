@@ -26,10 +26,7 @@ const userSchema = new Schema({
     userEducation: {
         type: String
     },
-    imageUrl: {
-        filename: String,
-        path: String,
-    }
+    
 })
 
 const User = mongoose.model('User', userSchema);

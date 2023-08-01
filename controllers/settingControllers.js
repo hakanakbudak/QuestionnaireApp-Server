@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const multer = require('multer');
 const User = require('../models/User');
-const path = require("path");
+const bcrypt=require('bcrypt');
 
 exports.getSetting=async (req, res) => {
     try {
@@ -20,26 +19,20 @@ exports.getSetting=async (req, res) => {
 
 exports.putSetting=async (req, res) => {
     try {
-        const { id } = req.params
-        const { email, username, password, userBirthDate, userJob, userCity, userEducation } = req.body
+        const { id } = req.params;
+        const { email, username, password, userBirthDate, userJob, userCity, userEducation } = req.body;
         if (!mongoose.Types.ObjectId.isValid(id))
-            return res.status(404).send('post bulunamadi')
-        const updatedSetting = { email, username, password, userBirthDate, userJob, userCity, userEducation, _id: id }
-        await User.findByIdAndUpdate(id, updatedSetting, { new: true })
-        res.json(updatedSetting)
+            return res.status(404).send('Post bulunamadı');
+        const updatedSetting = { email, username, userBirthDate, userJob, userCity, userEducation, _id: id };
+        if (password) {
+            const hashedPassword = bcrypt.hashSync(password, 10);
+            updatedSetting.password = hashedPassword;
+        }
+        const updatedUser = await User.findByIdAndUpdate(id, updatedSetting, { new: true });
+        res.json(updatedUser);
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        res.status(500).json({ error: 'Sunucu hatası: Kullanıcı güncellenemedi' });
     }
 
 };
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-      const filename = file.originalname.replace(/ /g, "_");
-      cb(null, filename);
-    },
-  });
-  const upload = multer({ storage });

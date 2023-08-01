@@ -11,6 +11,4 @@ mongoose.connect(connectionString, {
     .catch((error) => console.error("MongoDB connection failed:", error.message))
 
 
-
-
 module.exports = connectionString;

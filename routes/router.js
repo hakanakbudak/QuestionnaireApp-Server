@@ -15,6 +15,9 @@ router.use(cors());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
+// add user
+router.post('/register', AuthController.authRegister);
+
 // getData
 router.get('/getData', (req, res) => {
     try {
@@ -55,8 +58,6 @@ router.put('/register/:id', async (req, res) => {
 
 })
 
-// add user
-router.post('/register', AuthController.authRegister);
 
 // login user
 router.post('/login', AuthController.authLogin);
@@ -79,17 +80,20 @@ router.delete('/questionnaire/:id', QuestionnaireController.deleteQuestionnaire)
 router.get('/search', SearchController.getAllSearch);
 
 // add comment
-router.post('/questionnaire/comment/:id', CommentController.createComment);
+router.post('/questionnaire/comment/:userId/:id', CommentController.createComment);
 
-// get questionnaire comment 
+// get questionnaire comment
 router.get('/questionnaire/:questionnaireId/comment', QuestionnaireController.getQuestionnaireComment);
 
 // get comment
 router.get('/comment', CommentController.getComment);
 
-router.post("/submitVote",QuestionnaireController.getQuestionnaireUserSelection)
+// delete comment
+router.delete('/questionnaire/comment/:id', CommentController.deleteComment)
 
-router.get("/getSurveyResults",QuestionnaireController.getQuestionnaireVoteResult)
+router.post("/submitVote", QuestionnaireController.getQuestionnaireUserSelection)
+
+router.get("/getSurveyResults", QuestionnaireController.getQuestionnaireVoteResult)
 
 //get setting
 router.get('/setting/:id', SettingController.getSetting);

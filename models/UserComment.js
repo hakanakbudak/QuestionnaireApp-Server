@@ -10,7 +10,12 @@ const userCommentSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'questionnaires',
         required:true 
-    }
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
 })
 
 const UserComment = mongoose.model('Comment', userCommentSchema);
