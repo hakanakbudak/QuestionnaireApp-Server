@@ -5,11 +5,18 @@ const UserComment = require('../models/UserComment');
 const QuestionnaireVote = require('../models/QuestionnairesVote');
 const jwt = require('jsonwebtoken');
 
-
 exports.getQuestionnaireUserSelection = async (req, res) => {
     try {
         const { selectionId, questionnaireId, userId } = req.body;
-        
+
+        // Kullanıcının daha önce aynı ankete oy verip vermediğini kontrol et
+        const existingVote = await QuestionnaireVote.findOne({ questionnaireId, userId });
+
+        if (existingVote) {
+            return res.status(400).json({ message: "Bu ankete zaten oy verildi." });
+        }
+
+        // Kullanıcı daha önce oy vermediyse, yeni oy kaydet
         await QuestionnaireVote.create({ selectionId, questionnaireId, userId });
         res.status(200).json({ message: "Seçim başarıyla kaydedildi." });
     } catch (error) {
