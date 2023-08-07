@@ -5,6 +5,7 @@ const UserComment = require('../models/UserComment');
 const QuestionnaireVote = require('../models/QuestionnairesVote');
 const jwt = require('jsonwebtoken');
 
+
 exports.getQuestionnaireUserSelection = async (req, res) => {
     try {
         const { selectionId, questionnaireId, userId } = req.body;
@@ -31,16 +32,21 @@ exports.getQuestionnaireVoteResult = async (req, res) => {
     }
 };
 
-
 exports.getQuestionnaireComment = async (req, res) => {
     try {
         const { id, questionnaireId } = req.params;
+        
+        if (!questionnaireId || questionnaireId === "null" || !mongoose.Types.ObjectId.isValid(questionnaireId)) {
+            return res.status(400).json({ error: 'Geçersiz questionnaireId parametresi' });
+        }
+
         const questionnaire = await Questionnaires.findById(id);
         const comments = await UserComment.find({ questionnaireId: questionnaireId }).populate('questionnaireId');
+
         if (!comments && !questionnaire) {
             return res.status(404).json({ error: 'Kullanıcı ve ait anket bulunamadı' });
         }
-        res.json(comments)
+        res.json(comments);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Bir hata oluştu' });
@@ -103,15 +109,14 @@ exports.putQuestionnaire = async (req, res) => {
 
 exports.deleteQuestionnaire = async (req, res) => {
     try {
-        const { id } = req.params
-        const { selectionOne, selectionTwo, selectionThree, question, category, questionnaireDate } = req.body
+        const { id } = req.params;
         if (!mongoose.Types.ObjectId.isValid(id))
-            return res.status(404).send('post bulunamadi')
+            return res.status(404).send('Anket bulunamadi');
 
-        const removeQuestionnaire = { selectionOne, selectionTwo, selectionThree, question, category, questionnaireDate, _id: id }
-        await Questionnaires.findByIdAndRemove(id, removeQuestionnaire)
-        res.json({ message: 'Person b silindi' })
+        await Questionnaires.findByIdAndRemove(id);
+        await QuestionnaireVote.deleteMany({ questionnaireId: id });
+        res.json({ message: 'Anket ve oranlar silindi' });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };

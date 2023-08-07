@@ -8,6 +8,7 @@ const QuestionnaireController = require('../controllers/questionnaireControllers
 const SearchController = require('../controllers/searchControllers');
 const CommentController = require('../controllers/commentControllers');
 const SettingController = require('../controllers/settingControllers');
+const JwtGetData=require('../middlewares/jwtMiddelware');
 
 router.use(express.json());
 router.options("*", cors());
@@ -15,92 +16,42 @@ router.use(cors());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
-// add user
 router.post('/register', AuthController.authRegister);
 
-// getData
-router.get('/getData', (req, res) => {
-    try {
-        const token = req.headers.authorization;
-        const secretKey = "MoHmggQ8ZyCb";
-        const verified = jwt.verify(token, secretKey);
-        if (verified) {
+router.get('/getData',JwtGetData.getData)
 
-            // write get data function
-            res.send('Successfull!')
-        } else {
-            res.send('Invalid Token!')
-        }
-    } catch (e) {
-        return res.send('Invalid Token!');
-    }
+router.put('/register/:id',AuthController.userUpdate)
 
-});
-
-// update register
-router.put('/register/:id', async (req, res) => {
-
-    try {
-        const { id } = req.params
-        const { email, username, password, userBirthDate, userJob, userCity, userEducation } = req.body
-
-        if (!mongoose.Types.ObjectId.isValid(id))
-            return res.status(404).send('post bulunamadi')
-
-        const updatedUser = { email, username, password, userBirthDate, userJob, userCity, userEducation, _id: id }
-
-        await User.findByIdAndUpdate(id, updatedUser, { new: true })
-
-        res.json(updatedUser)
-    } catch (error) {
-        console.log(error)
-    }
-
-})
-
-
-// login user
 router.post('/login', AuthController.authLogin);
 
-// get all questionnaire
 router.get('/questionnaire', QuestionnaireController.getAllQuestionaire);
 
 router.get('/questionnaire/:userId', QuestionnaireController.getQuestionnaire);
 
-// add questionnaire
 router.post('/questionnaire/create/:id', QuestionnaireController.addQuestionnaire);
 
-// update questionnaire
 router.put('/questionnaire/:id', QuestionnaireController.putQuestionnaire);
 
-// questionnaire delete
 router.delete('/questionnaire/:id', QuestionnaireController.deleteQuestionnaire);
 
-// questionnaire search
 router.get('/search', SearchController.getAllSearch);
 
-// add comment
 router.post('/questionnaire/comment/:userId/:id', CommentController.createComment);
 
-// get questionnaire comment
 router.get('/questionnaire/:questionnaireId/comment', QuestionnaireController.getQuestionnaireComment);
 
-// get comment
 router.get('/comment', CommentController.getComment);
 
-// delete comment
-router.delete('/questionnaire/comment/:id', CommentController.deleteComment)
+router.delete('/questionnaire/comment/:id', CommentController.deleteComment);
+
+router.put('/questionnaire/comment/:id', CommentController.editComment)
 
 router.post("/submitVote", QuestionnaireController.getQuestionnaireUserSelection)
 
 router.get("/getSurveyResults", QuestionnaireController.getQuestionnaireVoteResult)
 
-//get setting
 router.get('/setting/:id', SettingController.getSetting);
 
-//update setting
 router.put('/setting/:id', SettingController.putSetting);
-
-
 
 module.exports = router;

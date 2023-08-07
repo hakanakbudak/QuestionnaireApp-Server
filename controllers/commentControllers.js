@@ -15,13 +15,11 @@ exports.createComment = async (req, res) => {
         }
         console.log(questionnaire)
 
-
         const newComment = new UserComment({
             comment: comment,
             questionnaireId: id,
             userId: user,
         });
-
         const savedComment = await newComment.save();
         console.log(savedComment)
 
@@ -43,9 +41,12 @@ exports.getComment = async (req, res) => {
 };
 
 exports.deleteComment = async (req, res) => {
-    const { id } = req.params
+
+    const { id } = req.params;
     try {
-        const deletedComment = await UserComment.findByIdAndRemove({ _id: id });
+
+
+        const deletedComment = await UserComment.findByIdAndRemove(id);
         if (!deletedComment) {
             return res.status(404).json({ message: 'Yorum bulunamadı.' });
         }
@@ -54,6 +55,20 @@ exports.deleteComment = async (req, res) => {
         console.error('Yorum silinirken bir hata oluştu:', error);
         return res.status(500).json({ message: 'Yorum silinirken bir hata oluştu.' });
     }
+};
+
+exports.editComment = async (req, res) => {
+
+    try {
+        const { id } = req.params
+        const { comment } = req.body
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).send('yorum bulunamadi')
+        const updatedComment = { comment, _id: id }
+        await UserComment.findByIdAndUpdate(id, updatedComment, { new: true })
+        res.json(updatedComment)
+    } catch (error) {
+        console.log(error)
+    }
+    
 }
-
-

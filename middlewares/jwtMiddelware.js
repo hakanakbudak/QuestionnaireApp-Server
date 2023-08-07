@@ -1,23 +1,16 @@
 const jwt = require('jsonwebtoken');
 
-const secretKey = 'gizliAnahtar';
-
-function jwtMiddleware(req, res, next) {
-  // İstek başlığından token'ı al
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({ error: 'Yetkilendirme başarısız: Token bulunamadı.' });
-  }
-
+exports.getData=async (req, res) => {
   try {
-    // Token'ı doğrula
-    const decoded = jwt.verify(token, secretKey);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Yetkilendirme başarısız: Geçersiz token.' });
+      const token = req.headers.authorization;
+      const secretKey = "MoHmggQ8ZyCb";
+      const verified = jwt.verify(token, secretKey);
+      if (verified) {
+          res.send('Successfull!')
+      } else {
+          res.send('Invalid Token!')
+      }
+  } catch (e) {
+      return res.send('Invalid Token!');
   }
-}
-
-module.exports = jwtMiddleware;
+};

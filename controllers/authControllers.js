@@ -21,30 +21,7 @@ exports.authRegister = (req, res, next) => {
     .catch(error => {
       console.error('User is not saved !', error);
     });
-},
-
-  /*
-  exports.authRegister = (req, res, next) => {
-  
-    const newUser = new User({
-      email: req.body.email,
-      username: req.body.username,
-      password: bcrypt.hashSync(req.body.password, 10),
-      userBirthDate: req.body.userBirthDate,
-      userJob: req.body.userJob,
-      userCity: req.body.userCity,
-      userEducation: req.body.userEducation,
-    })
-      newUser.save()
-      .then(savedUser => {
-          console.log('User saved...', savedUser);
-          res.send(savedUser)
-      })
-      .catch(error => {
-          console.error('User is not saved !', error);
-      });
   },
-  */
 
   exports.authLogin = async (req, res) => {
     try {
@@ -72,3 +49,22 @@ exports.authRegister = (req, res, next) => {
       res.status(500).json({ error: 'Sunucu hatası: Giriş yapılamadı' });
     }
   };
+
+exports.userUpdate = async (req, res) => {
+
+  try {
+    const { id } = req.params
+    const { email, username, password, userBirthDate, userJob, userCity, userEducation } = req.body
+
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send('post bulunamadi')
+
+    const updatedUser = { email, username, password, userBirthDate, userJob, userCity, userEducation, _id: id }
+
+    await User.findByIdAndUpdate(id, updatedUser, { new: true })
+
+    res.json(updatedUser)
+  } catch (error) {
+    console.log(error)
+  }
+};

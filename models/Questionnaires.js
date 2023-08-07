@@ -25,7 +25,7 @@ const questionnairesSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
-        required:true //sonradan ekledim silinebilir
+        required:true
     },
     
 
